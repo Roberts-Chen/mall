@@ -38,4 +38,18 @@ class OrderServiceImplTest extends MallApplicationTests {
         log.info("list：{}", gson.toJson(responseVo));
         Assertions.assertEquals(ResponseEnum.SUCCESS.getCode(), responseVo.getStatus());
     }
+
+    @Test
+    void detail() {
+        ResponseVo<OrderVo> responseVo = orderService.detail(uid, 1613384769422L);
+        log.info("detail: {}", gson.toJson(responseVo));
+        Assertions.assertEquals(ResponseEnum.SUCCESS.getCode(), responseVo.getStatus());
+    }
+
+    @Test
+    void cancel() {
+        ResponseVo responseVo = orderService.cancel(uid, 1613384769422L);
+        log.info("detail: {}", gson.toJson(responseVo));
+        Assertions.assertEquals(ResponseEnum.SUCCESS.getCode(), responseVo.getStatus());
+    }
 }

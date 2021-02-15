@@ -50,6 +50,29 @@ public class OrderServiceImpl implements IOrderService {
     private StringRedisTemplate stringRedisTemplate;
 
     @Override
+    public ResponseVo cancel(Integer uid, Long orderNo) {
+        Order order = orderMapper.selectByOrderNo(orderNo);
+
+        // 不管是订单不存在还是用户没有该订单都返回订单不存在，这是因为数据敏感性要求我们尽可能返回模糊的信息
+        if (order == null || !order.getUserId().equals(uid)) {
+            return ResponseVo.error(ResponseEnum.ORDER_NOT_EXIST);
+        }
+
+        // 约定：只有[未付款]的订单才能取消
+        if (!OrderStatusEnum.NO_PAY.getCode().equals(order.getStatus())) {
+            return ResponseVo.error(ResponseEnum.ORDER_STATUS_ERROR);
+        }
+
+        order.setStatus(OrderStatusEnum.CANCELED.getCode());
+        int row = orderMapper.updateByPrimaryKeySelective(order);
+        if (row <= 0) {
+            return ResponseVo.error(ResponseEnum.ERROR);
+        }
+
+        return ResponseVo.success();
+    }
+
+    @Override
     @Transactional
     public ResponseVo<OrderVo> create(Integer uid, Integer shippingId) {
         // 收货地址校验（查出来）
@@ -170,6 +193,27 @@ public class OrderServiceImpl implements IOrderService {
         return ResponseVo.success(pageInfo);
     }
 
+    @Override
+    public ResponseVo<OrderVo> detail(Integer uid, Long orderNo) {
+        Order order = orderMapper.selectByOrderNo(orderNo);
+
+        // 不管是订单不存在还是用户没有该订单都返回订单不存在，这是因为数据敏感性要求我们尽可能返回模糊的信息
+        if (order == null || !order.getUserId().equals(uid)) {
+            return ResponseVo.error(ResponseEnum.ORDER_NOT_EXIST);
+        }
+
+        // 订单项
+        Set<Long> orderNoSet = new HashSet<>();
+        orderNoSet.add(order.getOrderNo());
+        List<OrderItem> orderItemList = orderItemMapper.selectByOrderNoSet(orderNoSet);
+
+        // 查地址
+        Shipping shipping = shippingMapper.selectByPrimaryKey(order.getShippingId());
+
+        OrderVo orderVo = buildOrderVo(order, orderItemList, shipping);
+        return ResponseVo.success(orderVo);
+    }
+
     private OrderVo buildOrderVo(Order order, List<OrderItem> orderItemList, Shipping shipping) {
         OrderVo orderVo = new OrderVo();
         BeanUtils.copyProperties(order, orderVo);
@@ -183,9 +227,11 @@ public class OrderServiceImpl implements IOrderService {
                 .collect(Collectors.toList());
         orderVo.setOrderItemVoList(orderItemVoList);
 
-        ShippingVo shippingVo = new ShippingVo();
-        BeanUtils.copyProperties(shipping, shippingVo);
-        orderVo.setShippingVo(shippingVo);
+        if (shipping != null) {
+            ShippingVo shippingVo = new ShippingVo();
+            BeanUtils.copyProperties(shipping, shippingVo);
+            orderVo.setShippingVo(shippingVo);
+        }
 
         return orderVo;
     }
