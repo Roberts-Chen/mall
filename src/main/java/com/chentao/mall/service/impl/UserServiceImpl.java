@@ -73,6 +73,7 @@ public class UserServiceImpl implements IUserService {
             return ResponseVo.error(USERNAME_OR_PASSWORD_ERROR);
         }
 
+        // 为了数据敏感性，在返回数据前将密码设为空字符串
         user.setPassword("");
         return ResponseVo.success(user);
     }

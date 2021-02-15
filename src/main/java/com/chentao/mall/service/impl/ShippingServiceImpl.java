@@ -30,7 +30,7 @@ public class ShippingServiceImpl implements IShippingService {
         BeanUtils.copyProperties(form, shipping);
         shipping.setUserId(uid);
         int row = shippingMapper.insertSelective(shipping);
-        if (row == 0) {
+        if (row <= 0) {
             return ResponseVo.error(ResponseEnum.ERROR);
         }
         Map<String, Integer> res = new HashMap<>();

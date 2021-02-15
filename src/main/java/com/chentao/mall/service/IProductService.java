@@ -16,8 +16,8 @@ public interface IProductService {
 
     /**
      * 查询某个商品的细节
-     * @param categoryId
+     * @param productId
      * @return
      */
-    ResponseVo<ProductDetailVo> detail(Integer categoryId);
+    ResponseVo<ProductDetailVo> detail(Integer productId);
 }

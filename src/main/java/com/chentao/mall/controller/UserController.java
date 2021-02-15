@@ -9,17 +9,16 @@ import com.chentao.mall.vo.ResponseVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
-import static com.chentao.mall.enums.ResponseEnum.PARAM_ERROR;
-
 @Slf4j
 @RestController
-//@RequestMapping("/user")
 public class UserController {
     @Autowired
     IUserService userService;
@@ -27,34 +26,19 @@ public class UserController {
     /**
      * 用户注册
      */
-    @ResponseBody
-    @PostMapping(value = "/user/register", produces = "application/json")
-    public ResponseVo register(@Valid @RequestBody UserRegisterForm userRegisterForm,
-                               BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            log.error("注册的参数有误，{} {}",
-                    bindingResult.getFieldError().getField(),
-                    bindingResult.getFieldError().getDefaultMessage());
-            return ResponseVo.error(PARAM_ERROR, bindingResult);
-        }
-
+    @PostMapping("/user/register")
+    public ResponseVo<User> register(@Valid @RequestBody UserRegisterForm form) {
         User user = new User();
-        BeanUtils.copyProperties(userRegisterForm, user);
+        BeanUtils.copyProperties(form, user);
         return userService.register(user);
     }
 
     @PostMapping("/user/login")
-    public ResponseVo login(@Valid @RequestBody UserLoginForm userLoginForm,
-                            BindingResult bindingResult,
+    public ResponseVo<User> login(@Valid @RequestBody UserLoginForm form,
                             HttpSession session) {
-        if (bindingResult.hasErrors()) {
-            return ResponseVo.error(PARAM_ERROR, bindingResult);
-        }
-
-        ResponseVo<User> userResponseVo = userService.login(userLoginForm.getUsername(), userLoginForm.getPassword());
+        ResponseVo<User> userResponseVo = userService.login(form.getUsername(),
+                                                            form.getPassword());
         session.setAttribute(MallConst.CURRENT_USER, userResponseVo.getData());
-
-
         return userResponseVo;
     }
 

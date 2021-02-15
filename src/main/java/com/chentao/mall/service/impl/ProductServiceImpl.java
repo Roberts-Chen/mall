@@ -56,8 +56,8 @@ public class ProductServiceImpl implements IProductService {
     }
 
     @Override
-    public ResponseVo<ProductDetailVo> detail(Integer categoryId) {
-        Product product = productMapper.selectByPrimaryKey(categoryId);
+    public ResponseVo<ProductDetailVo> detail(Integer productId) {
+        Product product = productMapper.selectByPrimaryKey(productId);
 
         // 如果商品处于下架状态或删除状态，就返回错误
         // 只对确定的状态进行判断，将增强程序的可扩展性
@@ -67,6 +67,10 @@ public class ProductServiceImpl implements IProductService {
 
         ProductDetailVo productDetailVo = new ProductDetailVo();
         BeanUtils.copyProperties(product, productDetailVo);
+
+        // 对敏感数据的处理，如果库存大于等于100件就显示为100件，否则就显示真实的库存值
+        productDetailVo.setStock(product.getStock() >= 100 ? 100 : product.getStock());
+
         return ResponseVo.success(productDetailVo);
     }
 
