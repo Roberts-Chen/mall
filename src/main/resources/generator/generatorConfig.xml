@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+    <classPathEntry location="D:\JavaWeb\repository\mysql\mysql-connector-java\8.0.22\mysql-connector-java-8.0.22.jar"/>
+
+    <context id="DB2Tables" targetRuntime="MyBatis3">
+        <!--        每次重新生成时，mapper.xml文件不再追加，而是重写-->
+        <plugin type="org.mybatis.generator.plugins.UnmergeableXmlMappersPlugin"/>
+
+        <commentGenerator>
+            <!-- 是否向自动生成的注释添加时间戳 -->
+            <property name="suppressDate" value="false"/>
+            <!-- 是否去除自动生成的注释 -->
+            <property name="suppressAllComments" value="true"/>
+        </commentGenerator>
+
+        <!--数据库连接配置-->
+        <jdbcConnection
+                driverClass="com.mysql.cj.jdbc.Driver"
+                connectionURL="jdbc:mysql://159.75.116.135:3306/malldb?useUnicode=true&amp;characterEncoding=UTF-8&amp;useSSL=false&amp;serverTimezone=Asia/Shanghai"
+                userId="root"
+                password="123456">
+            <property name="nullCatalogMeansCurrent" value="true"/>
+        </jdbcConnection>
+
+
+        <!-- 默认false，把JDBC DECIMAL 和 NUMERIC 类型解析为 Integer，为 true时把JDBC DECIMAL 和
+           NUMERIC 类型解析为java.math.BigDecimal -->
+        <javaTypeResolver>
+            <property name="forceBigDecimals" value="false"/>
+        </javaTypeResolver>
+
+
+        <!-- 指定javaBean生成的位置
+                    targetPackage：生成的类要放的包，真实的包受enableSubPackages属性控制；
+                    targetProject：目标项目，指定一个存在的目录下，生成的内容会放到指定目录中，如果目录不存在，MBG不会自动建目录
+        -->
+        <javaModelGenerator targetPackage="com.chentao.mall.pojo"
+                            targetProject="./src/main/java">
+            <!-- 在targetPackage的基础上，根据数据库的schema再生成一层package，最终生成的类放在这个package下，默认为false；如果多个数据库改为true分目录 -->
+            <property name="enableSubPackages" value="true"/>
+            <!-- 设置是否在getter方法中，对String类型字段调用trim()方法 -->
+            <property name="trimStrings" value="true"/>
+        </javaModelGenerator>
+
+
+        <!--  指定mapper映射文件生成的位置
+           targetPackage、targetProject同javaModelGenerator中作用一样-->
+        <sqlMapGenerator targetPackage="mapper" targetProject="./src/main/resources">
+            <!-- 在targetPackage的基础上，根据数据库的schema再生成一层package，最终生成的类放在这个package下，默认为false；如果多个数据库改为true分目录 -->
+            <property name="enableSubPackages" value="true"/>
+        </sqlMapGenerator>
+
+        <!-- 指定mapper接口生成的位置
+         targetPackage、targetProject同javaModelGenerator中作用一样
+         -->
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com.chentao.mall.mapper" targetProject="./src/main/java">
+            <property name="enableSubPackages" value="true"/>
+        </javaClientGenerator>
+
+        <!-- 指定数据库表
+        domainObjectName：生成的domain类的名字,当表名和domain类的名字有差异时一定要设置，如果不设置，直接使用表名作为domain类的名字；
+        可以设置为somepck.domainName，那么会自动把domainName类再放到somepck包里面；
+        -->
+        <!--        <table schema="DB2ADMIN" tableName="ALLTYPES" domainObjectName="Customer">-->
+        <!--            <property name="useActualColumnNames" value="true"/>-->
+        <!--            <generatedKey column="ID" sqlStatement="DB2" identity="true"/>-->
+        <!--            <columnOverride column="DATE_FIELD" property="startDate"/>-->
+        <!--            <ignoreColumn column="FRED"/>-->
+        <!--            <columnOverride column="LONG_VARCHAR_FIELD" jdbcType="VARCHAR"/>-->
+        <!--        </table>-->
+        <!--        <table tableName="t_admin" enableCountByExample="false"-->
+        <!--               enableUpdateByExample="false" enableDeleteByExample="false"-->
+        <!--               enableSelectByExample="false" selectByExampleQueryId="false"/>-->
+        <!-- tableName：指定要绑定表名
+             domainObjectName：要生成的对象名
+             enableCountByExample
+             enableUpdateByExample
+             enableSelectByExample
+             enableDeleteByExample
+             selectByExampleQueryId
+             上面五个都是生成动态sql时要用的，我们不需要动态sql，所以都配置为false
+         -->
+<!--        <table tableName="mall_order" domainObjectName="Order"-->
+<!--               enableCountByExample="false" enableUpdateByExample="false"-->
+<!--               enableDeleteByExample="false" enableSelectByExample="false"-->
+<!--               selectByExampleQueryId="false"/>-->
+<!--        <table tableName="mall_order_item" domainObjectName="OrderItem"-->
+<!--               enableCountByExample="false" enableUpdateByExample="false"-->
+<!--               enableDeleteByExample="false" enableSelectByExample="false"-->
+<!--               selectByExampleQueryId="false"/>-->
+<!--        <table tableName="mall_user" domainObjectName="User"-->
+<!--               enableCountByExample="false" enableUpdateByExample="false"-->
+<!--               enableDeleteByExample="false" enableSelectByExample="false"-->
+<!--               selectByExampleQueryId="false"/>-->
+<!--        <table tableName="mall_shipping" domainObjectName="Shipping"-->
+<!--               enableCountByExample="false" enableUpdateByExample="false"-->
+<!--               enableDeleteByExample="false" enableSelectByExample="false"-->
+<!--               selectByExampleQueryId="false"/>-->
+<!--        <table tableName="mall_category" domainObjectName="Category"-->
+<!--               enableCountByExample="false" enableUpdateByExample="false"-->
+<!--               enableDeleteByExample="false" enableSelectByExample="false"-->
+<!--               selectByExampleQueryId="false"/>-->
+        <table tableName="mall_product" domainObjectName="Product"
+               enableCountByExample="false" enableUpdateByExample="false"
+               enableDeleteByExample="false" enableSelectByExample="false"
+               selectByExampleQueryId="false">
+            <!-- 因为sub_images和detail在数据库中都是text类型，所以mybatis-generator会自动将它们两独立出来另外
+                 生成一个BLOB操作的类，如果不想生成另外的类，可以重写一下这两个字段的数据类型
+             -->
+            <columnOverride column="sub_images" jdbcType="VARCHAR"/>
+            <columnOverride column="detail" jdbcType="VARCHAR"/>
+        </table>
+    </context>
+</generatorConfiguration>
