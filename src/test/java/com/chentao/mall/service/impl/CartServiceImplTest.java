@@ -10,7 +10,9 @@ import com.chentao.mall.vo.ResponseVo;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -30,18 +32,14 @@ class CartServiceImplTest extends MallApplicationTests {
     private Integer uid = 1;
     private Integer productId = 7;
 
-//    @BeforeEach
-    @Test
+    @BeforeEach
     void add() {
         CartAddForm form = new CartAddForm();
-        for (int i = 1; i <= 20; i++) {
-//            form.setProductId(productId);
-            form.setProductId(i);
-            form.setSelected(true);
-            ResponseVo<CartVo> responseVo = cartService.add(uid, form);
-        }
-//        log.info("add: {}", gson.toJson(responseVo));
-//        Assertions.assertEquals(ResponseEnum.SUCCESS.getCode(), responseVo.getStatus());
+        form.setProductId(productId);
+        form.setSelected(true);
+        ResponseVo<CartVo> responseVo = cartService.add(uid, form);
+        log.info("add: {}", gson.toJson(responseVo));
+        Assertions.assertEquals(ResponseEnum.SUCCESS.getCode(), responseVo.getStatus());
     }
 
     @Test
@@ -62,10 +60,9 @@ class CartServiceImplTest extends MallApplicationTests {
 
     }
 
-//    @AfterEach
-    @Test
+    @AfterEach
     void delete() {
-        ResponseVo<CartVo> responseVo = cartService.delete(uid, 4);
+        ResponseVo<CartVo> responseVo = cartService.delete(uid, productId);
         log.info("update: {}", gson.toJson(responseVo));
         Assertions.assertEquals(ResponseEnum.SUCCESS.getCode(), responseVo.getStatus());
 

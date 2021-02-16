@@ -134,6 +134,7 @@
                 </configuration>
             </plugin>
         </plugins>
+        <finalName>mall</finalName>
     </build>
 
 </project>

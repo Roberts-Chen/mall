@@ -50,7 +50,7 @@ public class UserController {
 
     @PostMapping("/user/logout")
     public ResponseVo logout(HttpSession session) {
-        log.info("/user/logout sessionId={}", session.getId());
+//        log.info("/user/logout sessionId={}", session.getId());
         // 从session中删除用户信息
         session.removeAttribute(MallConst.CURRENT_USER);
         return ResponseVo.success();

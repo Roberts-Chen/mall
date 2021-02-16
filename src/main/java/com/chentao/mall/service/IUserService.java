@@ -8,11 +8,11 @@ public interface IUserService {
     /**
      * 注册
      */
-    public ResponseVo<User> register(User user);
+    ResponseVo<User> register(User user);
 
 
     /**
      * 登录
      */
-    public ResponseVo<User> login(String username, String password);
+    ResponseVo<User> login(String username, String password);
 }
