@@ -44,7 +44,6 @@ class ShippingServiceImplTest extends MallApplicationTests {
     void add() {
         ShippingForm form = new ShippingForm();
         form.setReceiverName("陈涛");
-        form.setReceiverPhone("110592");
         form.setReceiverMobile("13428835966");
         form.setReceiverProvince("广东");
         form.setReceiverCity("广州");
